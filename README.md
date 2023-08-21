@@ -1,13 +1,6 @@
-# Sample Hardhat Project
+# Wallet-msg-portal-contract Project
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+This project demonstrates a smart contract that allows wallet accounts to msg each other.
 
-Try running some of the following tasks:
-
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
+Use the following command to start:
 npx hardhat run scripts/deploy.js
-```
