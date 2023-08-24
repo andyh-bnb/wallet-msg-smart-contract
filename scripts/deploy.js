@@ -19,14 +19,20 @@ async function main() {
   console.log("Deploying contracts with account: ", deployerAddress);
   console.log("Depolyer Account balance:", accountBalance.toString());
  // console.log("Deployer2 Account balance:", accountBalance2.toString());
-  const waveContract = await hre.ethers.deployContract("WavePortal");
-  await waveContract.waitForDeployment(); //deployed//deployed
+  
+  const lockedAmount = hre.ethers.parseEther("0.001");
+  const WaveContract = await ethers.getContractFactory("WavePortal");
+  const waveContract = await WaveContract.deploy( { value: lockedAmount });
+  //const waveContract = await hre.ethers.deployContract("WavePortal");
+  
+  
+  await waveContract.waitForDeployment(); //deployed
   const waveAddress = await waveContract.getAddress();
 
   console.log("WavePortal address: ", waveAddress);
 }
 
-// We recommend this pattern to be able to use async/await everywhere
+// Use async/await everywhere
 // and properly handle errors.
 main().catch((error) => {
   console.error(error);
