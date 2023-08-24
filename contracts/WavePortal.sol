@@ -7,47 +7,42 @@ import "hardhat/console.sol";
 contract WavePortal {
 
     uint256 totalWaves;
+    event NewWave(address indexed from, uint256 timestamp, string message);
+
+     struct Wave {
+        address waver; // The address of the user who waved.
+        string message; // The message the user sent.
+        uint256 timestamp; // The timestamp when the user waved.
+    }
+
+    Wave[] waves;
 
     constructor() {
         console.log("-smart contract constructed-");
     }
 
-    function wave() public {
-        totalWaves += 1;
-        console.log("sender:%s wave 'in' ", msg.sender);
+    // function wave() public {
+    //     totalWaves += 1;
+    //     console.log("sender:%s wave 'in' ", msg.sender);
 
+    // }
+
+    function wave(string memory _message) public {
+        totalWaves += 1;
+        console.log("%s waved w/ message %s", msg.sender, _message);
+
+        waves.push(Wave(msg.sender, _message, block.timestamp));
+
+        //emit an event
+        emit NewWave(msg.sender, block.timestamp, _message);
     }
 
+    function getAllWaves() public view returns (Wave[] memory) {
+        return waves;
+    }
+    
     function getTotalWaves() public view returns (uint256) {
         console.log("total waves: %d", totalWaves);
         return totalWaves;
     }
 }
-// contract Lock {
-//     uint public unlockTime;
-//     address payable public owner;
-
-//     event Withdrawal(uint amount, uint when);
-
-//     constructor(uint _unlockTime) payable {
-//         require(
-//             block.timestamp < _unlockTime,
-//             "Unlock time should be in the future"
-//         );
-
-//         unlockTime = _unlockTime;
-//         owner = payable(msg.sender);
-//     }
-
-//     function withdraw() public {
-//         // Uncomment this line, and the import of "hardhat/console.sol", to print a log in your terminal
-//         // console.log("Unlock time is %o and block timestamp is %o", unlockTime, block.timestamp);
-
-//         require(block.timestamp >= unlockTime, "You can't withdraw yet");
-//         require(msg.sender == owner, "You aren't the owner");
-
-//         emit Withdrawal(address(this).balance, block.timestamp);
-
-//         owner.transfer(address(this).balance);
-//     }
-// }
