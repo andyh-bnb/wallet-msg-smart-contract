@@ -49,9 +49,6 @@ contract WavePortal {
 
     function wave(string memory _message) payable public {
         
-        
-
-
         totalWaves += 1;
         console.log("%s made a donation message: %s", msg.sender, _message);
         console.log("%s transferred a value: %s", msg.sender, msg.value);
@@ -62,29 +59,19 @@ contract WavePortal {
         //emit an event
         emit NewWave(msg.sender, block.timestamp, _message);
 
-        uint256 sendAmount = 0.000001 ether;
+        // uint256 sendAmount = 0.000001 ether;
 
-        require(
-            sendAmount <= address(msg.sender).balance,
-            "Insufficient fund"
-        );
+        // require(
+        //     sendAmount <= address(msg.sender).balance,
+        //     "Insufficient fund"
+        // );
 
         // (bool success, ) = (msg.sender).call{value: sendAmount}("");
         // require(success, "Failed to withdraw money from contract.");    
-    
-        (bool sent, ) = payable(this).call{value: sendAmount}("");
-        require(sent, "Failed to donate Ether");
-        //payable(this).transfer(sendAmount);
-
-        
-        
 
     }
-    
-    function deposit() external payable {
-        require(msg.value == 0.000002 ether, "please send 000002 ether");
-    }
 
+    //Send pure Wave message
     function wave1(string memory _message) payable public {
         
         //Prevent Spam
