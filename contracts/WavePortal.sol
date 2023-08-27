@@ -13,6 +13,7 @@ contract WavePortal {
         address waver; // The address of the user who waved.
         string message; // The message the user sent.
         uint256 timestamp; // The timestamp when the user waved.
+        uint256 amount;
     }
 
     Wave[] waves;
@@ -26,13 +27,65 @@ contract WavePortal {
         console.log("-smart contract constructed-");
     }
 
+    //Be able to receive crypto
+    event Received(address, uint);
+
+    receive() external payable {
+        emit Received(msg.sender, msg.value);
+    }
+
     // function wave() public {
     //     totalWaves += 1;
     //     console.log("sender:%s wave 'in' ", msg.sender);
 
     // }
+    function sendViaCall(address payable _to) public payable {
+        // Call returns a boolean value indicating success or failure.
+        // This is the current recommended method to use.
+        //(bool sent, bytes memory data) = _to.call{value: msg.value}("");
+        (bool sent, ) = _to.call{value: msg.value}("");
+        require(sent, "Failed to send Ether");
+    }
 
-    function wave(string memory _message) public {
+    function wave(string memory _message) payable public {
+        
+        
+
+
+        totalWaves += 1;
+        console.log("%s made a donation message: %s", msg.sender, _message);
+        console.log("%s transferred a value: %s", msg.sender, msg.value);
+
+
+        waves.push(Wave(msg.sender, _message, block.timestamp, msg.value));
+
+        //emit an event
+        emit NewWave(msg.sender, block.timestamp, _message);
+
+        uint256 sendAmount = 0.000001 ether;
+
+        require(
+            sendAmount <= address(msg.sender).balance,
+            "Insufficient fund"
+        );
+
+        // (bool success, ) = (msg.sender).call{value: sendAmount}("");
+        // require(success, "Failed to withdraw money from contract.");    
+    
+        (bool sent, ) = payable(this).call{value: sendAmount}("");
+        require(sent, "Failed to donate Ether");
+        //payable(this).transfer(sendAmount);
+
+        
+        
+
+    }
+    
+    function deposit() external payable {
+        require(msg.value == 0.000002 ether, "please send 000002 ether");
+    }
+
+    function wave1(string memory _message) payable public {
         
         //Prevent Spam
         require(
@@ -45,7 +98,7 @@ contract WavePortal {
         totalWaves += 1;
         console.log("%s sent a message %s", msg.sender, _message);
 
-        waves.push(Wave(msg.sender, _message, block.timestamp));
+        waves.push(Wave(msg.sender, _message, block.timestamp, msg.value));
 
         //emit an event
         emit NewWave(msg.sender, block.timestamp, _message);
